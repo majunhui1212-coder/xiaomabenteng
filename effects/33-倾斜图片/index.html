@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      .tilt-image {
+        transform: rotate(8deg) scale(0.95);
+        opacity: 0;
+        animation: slideIn 1.6s forwards;
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        border-radius: 8px;
+      }
+
+      .tilt-image.done {
+        animation: none;
+        opacity: 1;
+        transition: transform 0.4s ease;
+      }
+
+      .tilt-image.done:hover {
+        transform: rotate(0deg) scale(1);
+      }
+
+      body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        margin: 0;
+      }
+
+      .card {
+        display: inline-block;
+      }
+
+      @keyframes slideIn {
+        from {
+          opacity: 0;
+          transform: rotate(15deg) scale(0.85);
+        }
+        to {
+          opacity: 1;
+          transform: rotate(8deg) scale(0.95);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <img
+        src="https://picsum.photos/400/300?random=11"
+        alt="倾斜图片"
+        class="tilt-image"
+        onanimationend="this.classList.add('done')"
+      />
+    </div>
+  </body>
+</html>

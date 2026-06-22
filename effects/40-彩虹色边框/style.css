@@ -1,0 +1,167 @@
+/* ── 样式复位与页面基础设置 ── */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: #fafafc;
+  color: #1d1d1f;
+  font-family: SF Pro SC, SF Pro Text, SF Pro Icons, PingFang SC, Helvetica Neue, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+  padding: 80px 20px;
+}
+
+.page-container {
+  width: 100%;
+  max-width: 800px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.page-header {
+  text-align: center;
+  margin-bottom: 60px;
+}
+
+.page-title {
+  font-size: 32px;
+  font-weight: 600;
+  letter-spacing: -0.5px;
+  color: #1d1d1f;
+  margin-bottom: 12px;
+}
+
+.page-subtitle {
+  font-size: 16px;
+  color: #86868b;
+  font-weight: 400;
+}
+
+/* ── 展示区域与卡片容器 ── */
+.showcase-area {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.apple-card {
+  position: relative;
+  width: 480px;
+  height: 210px;
+  border-radius: 28px;
+  background-color: #ffffff; /* 卡片白底 */
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.02);
+  overflow: hidden; /* 关键：裁剪所有溢出卡片外部的渐变与模糊，确保容器外无颜色 */
+}
+
+/* ── 卡片内容层 ── */
+.card-content {
+  position: relative;
+  z-index: 2; /* 内容层置于最前方 */
+  width: 100%;
+  height: 100%;
+  border-radius: 28px;
+  background-color: transparent;
+  display: flex;
+  align-items: center;
+  padding: 32px 36px;
+}
+
+/* ── Apple 官方渐变边框与霓虹发光实现 ── */
+
+/* 1. 霓虹外发光层 (降低模糊到 6px 以凝聚色彩) */
+.apple-intelligence-glow.apple-intelligence-glow-2 {
+  filter: blur(8px);
+  inset: 0; /* 对齐卡片边界 */
+}
+
+/* 1.1 霓虹外发光层的镂空宽度 (略微调整至 4px，加深色彩浓度) */
+.apple-intelligence-glow.apple-intelligence-glow-2::after {
+  border: 4px solid rgba(0, 0, 0, 0); 
+  border-radius: 28px; /* 与卡片圆角一致 */
+}
+
+/* 2. 基础渐变边框层 (降低模糊到 0.5px，让边缘线条更清晰艳丽) */
+.apple-intelligence-glow {
+  --igradient: linear-gradient(115deg, #00d0ff, #09f 20%, #c95eff 42%, #ff2569 63%, #ff8300 83%, #ffb000);
+  position: absolute;
+  z-index: 1; /* 置于白底卡片之上 */
+  inset: 0; /* 对齐卡片边界 */
+  border: 0;
+  filter: blur(0.5px);
+}
+
+/* 3. 使用 mask-clip 与 mask-composite 的遮罩生成精致边框 */
+.apple-intelligence-glow::after {
+  --bg-size: calc(100% + 14px);
+  content: "";
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  background: var(--igradient) 50% / var(--bg-size) var(--bg-size);
+  border-radius: 28px; /* 与卡片圆角一致 */
+  
+  /* 基础锐利边框粗细空间 (略微加粗至 2px，使色彩明显) */
+  border: 2px solid transparent;
+  
+  /* 兼容旧版 Webkit 引擎 (Safari/Chrome) */
+  -webkit-mask: linear-gradient(hsla(0, 0%, 100%, 0), hsla(0, 0%, 100%, 0)), linear-gradient(hsl(0, 0%, 100%), hsl(0, 0%, 100%));
+  -webkit-mask-clip: padding-box, border-box;
+  -webkit-mask-composite: destination-in;
+  
+  /* 标准 CSS 遮罩属性 */
+  mask: linear-gradient(hsla(0, 0%, 100%, 0), hsla(0, 0%, 100%, 0)), linear-gradient(hsl(0, 0%, 100%), hsl(0, 0%, 100%));
+  mask-clip: padding-box, border-box;
+  mask-composite: intersect;
+}
+
+/* ── 卡片内元素排版 ── */
+.chip-icon-wrapper {
+  width: 76px;
+  height: 76px;
+  margin-right: 32px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.chip-svg {
+  width: 100%;
+  height: 100%;
+  color: #1d1d1f;
+  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.card-text-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.card-text-container h2 {
+  font-size: 22px;
+  font-weight: 550;
+  line-height: 1.4;
+  letter-spacing: -0.2px;
+  color: #1d1d1f;
+  margin: 0;
+}
+
+/* ── 交互动效 ── */
+.apple-card:hover .chip-svg {
+  transform: scale(1.06) rotate(3deg);
+}
+
+.apple-card:hover .apple-intelligence-glow.apple-intelligence-glow-2 {
+  filter: blur(12px);
+  opacity: 0.95;
+}
+

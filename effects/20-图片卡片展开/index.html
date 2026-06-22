@@ -1,0 +1,269 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      .container {
+        width: 70%;
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 20px;
+        justify-items: center;
+        align-items: center;
+        max-width: 800px;
+      }
+      .card {
+        position: relative;
+        background: transparent;
+        width: 190px;
+        height: 190px;
+        border: none;
+        transition: width 0.3s ease-in-out;
+        padding-top: 0;
+      }
+
+      .card:hover {
+        width: 290px;
+        z-index: 10;
+      }
+
+      .card .container-image {
+        position: absolute;
+        top: 0;
+        left: 0;
+        background: #e7e7e7;
+        width: 190px;
+        height: 190px;
+        cursor: pointer;
+        border: none;
+        border-radius: 20px;
+        box-sizing: border-box;
+        box-shadow:
+          0 0 3px 1px #1818183d,
+          2px 2px 3px #18181865;
+        overflow: hidden;
+        opacity: 1;
+        visibility: visible;
+        transition: all 0.3s ease-in-out;
+      }
+
+      .card:hover .container-image {
+        opacity: 0;
+        visibility: hidden;
+      }
+
+      .card .container-image .image-circle {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 180px;
+        height: 180px;
+        object-fit: cover;
+        border-radius: 20px;
+        filter: drop-shadow(2px 2px 2px #1818188a);
+        opacity: 1;
+        transition: all 0.3s ease-in-out;
+      }
+
+      .card:hover .container-image .image-circle {
+        opacity: 0;
+      }
+
+      .card .content {
+        display: flex;
+        flex-direction: column;
+        position: relative;
+        background: #e7e7e7;
+        padding: 15px;
+        width: 190px;
+        height: 190px;
+        box-sizing: border-box;
+        cursor: pointer;
+        border: none;
+        border-radius: 8px;
+        box-shadow:
+          0 0 3px 1px #1818183d,
+          2px 2px 3px #18181865,
+          inset 2px 2px 2px #ffffff;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s ease-in-out;
+        z-index: 1;
+      }
+
+      .card:hover .content {
+        width: 290px;
+        height: 190px;
+        opacity: 1;
+        visibility: visible;
+      }
+
+      .card .content .detail {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        height: 100%;
+        opacity: 0;
+        transition: all 0.3s ease-in-out;
+      }
+
+      .card:hover .content .detail {
+        color: #181818;
+        opacity: 1;
+      }
+
+      .card .content .detail .top-section {
+        display: flex;
+        height: 50%;
+        margin-bottom: 10px;
+      }
+
+      .card .content .detail .top-section .title {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        margin-right: 10px;
+      }
+
+      .card .content .detail .top-section .title span {
+        font-size: 18px;
+        font-weight: 800;
+      }
+
+      .card .content .detail .top-section .image-container {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .card .content .detail .top-section .image-container img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 4px;
+      }
+
+      .card .content .detail .bottom-section {
+        height: 50%;
+        display: flex;
+        align-items: flex-start;
+        overflow: hidden;
+      }
+
+      .card .content .detail .bottom-section p {
+        width: 100%;
+        margin: 0;
+        font-size: 16px;
+        color: #333;
+        word-wrap: break-word;
+        word-break: break-all;
+        overflow-wrap: break-word;
+        line-height: 1.4;
+        text-align: left;
+      }
+
+      .card .content .product-image {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="card">
+        <div class="container-image">
+          <img
+            class="image-circle"
+            src="https://picsum.photos/250/150?random=10"
+            alt="Shoes"
+          />
+        </div>
+        <div class="content">
+          <div class="detail">
+            <div class="top-section">
+              <div class="title">
+                <span>
+                  Lorem <br />
+                  Ipsum dolor.
+                </span>
+              </div>
+              <div class="image-container">
+                <img
+                  src="https://picsum.photos/250/150?random=10"
+                  alt="Product"
+                />
+              </div>
+            </div>
+            <div class="bottom-section">
+              <p>detaildetaildetaildetaildetaildetaildetaildetaildetail</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="container-image">
+          <img
+            class="image-circle"
+            src="https://picsum.photos/250/150?random=10"
+            alt="Shoes"
+          />
+        </div>
+        <div class="content">
+          <div class="detail">
+            <div class="top-section">
+              <div class="title">
+                <span>
+                  Lorem <br />
+                  Ipsum dolor.
+                </span>
+              </div>
+              <div class="image-container">
+                <img
+                  src="https://picsum.photos/250/150?random=10"
+                  alt="Product"
+                />
+              </div>
+            </div>
+            <div class="bottom-section">
+              <p>detaildetaildetaildetaildetaildetaildetaildetaildetail</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="container-image">
+          <img
+            class="image-circle"
+            src="https://picsum.photos/250/150?random=10"
+            alt="Shoes"
+          />
+        </div>
+        <div class="content">
+          <div class="detail">
+            <div class="top-section">
+              <div class="title">
+                <span>
+                  Lorem <br />
+                  Ipsum dolor.
+                </span>
+              </div>
+              <div class="image-container">
+                <img
+                  src="https://picsum.photos/250/150?random=10"
+                  alt="Product"
+                />
+              </div>
+            </div>
+            <div class="bottom-section">
+              <p>detaildetaildetaildetaildetaildetaildetaildetaildetail</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

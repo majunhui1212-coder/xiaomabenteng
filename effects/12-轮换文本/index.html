@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Rotating Text Demo</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          Oxygen, Ubuntu, Cantarell, sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        background-color: #000;
+        padding: 20px;
+      }
+
+      .container {
+        text-align: center;
+      }
+
+      .rotating-text-container {
+        display: inline-flex;
+        align-items: center;
+        font-size: 48px;
+        font-weight: bold;
+        color: #333;
+        gap: 10px;
+        flex-wrap: nowrap;
+      }
+
+      .fixed-text {
+        display: inline-block;
+        color: #fff;
+      }
+
+      .rotating-text-wrapper {
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 200px;
+        height: 60px;
+        overflow: hidden;
+        vertical-align: middle;
+        background: #86efac;
+        border-radius: 8px;
+        padding: 8px 16px;
+        box-sizing: border-box;
+        transition: width 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        width: auto;
+        max-width: 100%;
+        flex-shrink: 0;
+      }
+
+      .rotating-text {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        color: #000;
+        position: absolute;
+        left: 0;
+        top: 0;
+        white-space: nowrap;
+        line-height: 1.2;
+        height: 60px;
+        width: 100%;
+        box-sizing: border-box;
+      }
+
+      .char-wrapper {
+        display: inline-block;
+        overflow: hidden;
+        position: relative;
+      }
+
+      .char {
+        display: inline-block;
+        transform: translateY(100%) translateX(20px);
+        opacity: 0;
+      }
+
+      .char.animate-in {
+        animation: charSlideIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+      }
+
+      .char.animate-out {
+        animation: charSlideOut 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+      }
+
+      @keyframes charSlideIn {
+        from {
+          transform: translateY(100%) translateX(20px);
+          opacity: 0;
+        }
+        to {
+          transform: translateY(0) translateX(0);
+          opacity: 1;
+        }
+      }
+
+      @keyframes charSlideOut {
+        from {
+          transform: translateY(0) translateX(0);
+          opacity: 1;
+        }
+        to {
+          transform: translateY(-100%) translateX(-20px);
+          opacity: 0;
+        }
+      }
+
+      /* 响应式设计 */
+      @media (max-width: 768px) {
+        .rotating-text-container {
+          font-size: 32px;
+        }
+
+        .rotating-text-wrapper {
+          min-width: 150px;
+          height: 50px !important;
+          padding: 6px 12px;
+        }
+
+        .rotating-text {
+          height: 50px;
+          font-size: 28px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="rotating-text-container" id="rotating-text-container"></div>
+    </div>
+
+    <script>
+      class RotatingText {
+        constructor(container, options = {}) {
+          this.container = container;
+          this.fixedText = options.fixedText || "";
+          this.rotatingTexts = options.rotatingTexts || [];
+          this.rotationInterval = options.rotationInterval || 2000;
+          this.loop = options.loop !== undefined ? options.loop : true;
+          this.auto = options.auto !== undefined ? options.auto : true;
+
+          this.currentTextIndex = 0;
+          this.intervalId = null;
+          this.isAnimating = false;
+          this.currentElement = null;
+
+          this.init();
+        }
+
+        init() {
+          // 清空容器，确保顺序正确
+          this.container.innerHTML = "";
+
+          // 创建固定文本（在左侧）
+          if (this.fixedText) {
+            const fixedEl = document.createElement("span");
+            fixedEl.className = "fixed-text";
+            fixedEl.textContent = this.fixedText;
+            this.container.appendChild(fixedEl);
+          }
+
+          // 创建轮换文本容器（在右侧，有背景）
+          const wrapper = document.createElement("div");
+          wrapper.className = "rotating-text-wrapper";
+          wrapper.id = "rotating-wrapper";
+          this.container.appendChild(wrapper);
+          this.wrapper = wrapper;
+
+          // 渲染初始文本
+          this.renderText();
+
+          // 开始自动播放
+          if (this.auto) {
+            this.startInterval();
+          }
+        }
+
+        renderText() {
+          if (this.isAnimating) return;
+
+          const currentText = this.rotatingTexts[this.currentTextIndex];
+          if (!currentText) return;
+
+          this.isAnimating = true;
+
+          // 如果有当前元素，先让它退出
+          if (this.currentElement) {
+            this.createNewText(currentText);
+          } else {
+            // 首次渲染
+            this.createNewText(currentText);
+          }
+        }
+
+        createNewText(text) {
+          // 移除旧元素
+          if (this.currentElement && this.currentElement.parentNode) {
+            // 先让旧字符退出
+            const oldChars = this.currentElement.querySelectorAll(".char");
+            oldChars.forEach((char) => {
+              char.classList.remove("animate-in");
+              char.classList.add("animate-out");
+            });
+
+            // 等待退出动画完成
+            setTimeout(() => {
+              if (this.currentElement && this.currentElement.parentNode) {
+                this.currentElement.remove();
+              }
+              this.createNewTextContent(text);
+            }, 300);
+          } else {
+            this.createNewTextContent(text);
+          }
+        }
+
+        createNewTextContent(text) {
+          // 分割文本为字符
+          const chars = [...text];
+
+          // 创建临时元素测量文本宽度（使用相同的字体样式）
+          const tempEl = document.createElement("span");
+          tempEl.style.visibility = "hidden";
+          tempEl.style.position = "absolute";
+          tempEl.style.whiteSpace = "nowrap";
+          tempEl.style.fontSize = "48px";
+          tempEl.style.fontWeight = "bold";
+          tempEl.style.fontFamily =
+            getComputedStyle(this.container).fontFamily ||
+            "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif";
+          tempEl.textContent = text;
+          document.body.appendChild(tempEl);
+
+          // 获取文本实际宽度
+          const textWidth = tempEl.offsetWidth;
+          tempEl.remove();
+
+          // 更新容器宽度以适应文本（包含 padding: 左右各16px = 32px）
+          const padding = 32;
+          const minWidth = 200;
+          const calculatedWidth = Math.max(textWidth + padding, minWidth);
+          this.wrapper.style.width = calculatedWidth + "px";
+
+          // 创建新元素容器
+          const textEl = document.createElement("span");
+          textEl.className = "rotating-text";
+
+          // 创建每个字符
+          chars.forEach((char, index) => {
+            const charWrapper = document.createElement("span");
+            charWrapper.className = "char-wrapper";
+
+            const charSpan = document.createElement("span");
+            charSpan.className = "char";
+            charSpan.textContent = char;
+            charSpan.style.animationDelay = `${index * 0.05}s`;
+
+            charWrapper.appendChild(charSpan);
+            textEl.appendChild(charWrapper);
+          });
+
+          this.wrapper.appendChild(textEl);
+          this.currentElement = textEl;
+
+          // 触发字符进入动画
+          requestAnimationFrame(() => {
+            const charElements = textEl.querySelectorAll(".char");
+            charElements.forEach((char) => {
+              char.classList.add("animate-in");
+            });
+          });
+
+          // 动画完成后重置状态
+          const totalDelay = chars.length * 0.05 + 0.4;
+          setTimeout(() => {
+            this.isAnimating = false;
+          }, totalDelay * 1000);
+        }
+
+        next() {
+          if (this.isAnimating) return;
+
+          const isAtEnd =
+            this.currentTextIndex === this.rotatingTexts.length - 1;
+          const nextIndex = isAtEnd
+            ? this.loop
+              ? 0
+              : this.currentTextIndex
+            : this.currentTextIndex + 1;
+
+          if (nextIndex !== this.currentTextIndex) {
+            this.currentTextIndex = nextIndex;
+            this.renderText();
+          }
+        }
+
+        previous() {
+          if (this.isAnimating) return;
+
+          const isAtStart = this.currentTextIndex === 0;
+          const prevIndex = isAtStart
+            ? this.loop
+              ? this.rotatingTexts.length - 1
+              : this.currentTextIndex
+            : this.currentTextIndex - 1;
+
+          if (prevIndex !== this.currentTextIndex) {
+            this.currentTextIndex = prevIndex;
+            this.renderText();
+          }
+        }
+
+        jumpTo(index) {
+          if (this.isAnimating) return;
+
+          const validIndex = Math.max(
+            0,
+            Math.min(index, this.rotatingTexts.length - 1)
+          );
+          if (validIndex !== this.currentTextIndex) {
+            this.currentTextIndex = validIndex;
+            this.renderText();
+          }
+        }
+
+        reset() {
+          if (this.isAnimating) return;
+
+          if (this.currentTextIndex !== 0) {
+            this.currentTextIndex = 0;
+            this.renderText();
+          }
+        }
+
+        startInterval() {
+          this.stopInterval();
+          if (this.auto) {
+            this.intervalId = setInterval(() => {
+              this.next();
+            }, this.rotationInterval);
+          }
+        }
+
+        stopInterval() {
+          if (this.intervalId) {
+            clearInterval(this.intervalId);
+            this.intervalId = null;
+          }
+        }
+
+        toggleAuto() {
+          this.auto = !this.auto;
+          if (this.auto) {
+            this.startInterval();
+          } else {
+            this.stopInterval();
+          }
+          return this.auto;
+        }
+
+        destroy() {
+          this.stopInterval();
+          if (this.container) {
+            this.container.innerHTML = "";
+          }
+        }
+      }
+
+      // 初始化
+      document.addEventListener("DOMContentLoaded", () => {
+        const container =
+          document.getElementById("rotating-text-container") ||
+          document.querySelector(".rotating-text-container");
+        new RotatingText(container, {
+          fixedText: "创意",
+          rotatingTexts: ["components", "coding", "design", "development"],
+          rotationInterval: 2000,
+          loop: true,
+          auto: true,
+        });
+      });
+    </script>
+  </body>
+</html>

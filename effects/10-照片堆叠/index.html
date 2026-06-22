@@ -1,0 +1,401 @@
+<!-- Stack 组件容器 -->
+<div
+  id="stack-container"
+  style="
+    padding: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 400px;
+  "
+></div>
+<script>
+  // Stack 卡片堆叠组件 - 原生 JavaScript 实现
+  class StackCards {
+    constructor(container, options = {}) {
+      this.container = container;
+      this.randomRotation = options.randomRotation || false;
+      this.sensitivity = options.sensitivity || 180;
+      this.sendToBackOnClick = options.sendToBackOnClick || false;
+      this.cardDimensions = options.cardDimensions || {
+        width: 200,
+        height: 200,
+      };
+      this.cardsData = options.cardsData || [];
+
+      this.cards = [...this.cardsData];
+      this.cardStates = new Map();
+      this.draggingCardId = null;
+      this.dragStartPos = { x: 0, y: 0 };
+      this.cardElements = new Map();
+
+      this.init();
+    }
+
+    // 初始化卡片状态
+    initCardState(cardId) {
+      if (!this.cardStates.has(cardId)) {
+        this.cardStates.set(cardId, {
+          x: 0,
+          y: 0,
+          rotateX: 0,
+          rotateY: 0,
+        });
+      }
+      return this.cardStates.get(cardId);
+    }
+
+    // 初始化
+    init() {
+      // 创建容器
+      const stackContainer = document.createElement("div");
+      stackContainer.className = "stack-container";
+      // 容器宽度 = 图片宽度 + 文案宽度 + 间距
+      const containerWidth =
+        this.cardDimensions.width + (this.cardDimensions.textWidth || 200) + 20;
+      stackContainer.style.width = containerWidth + "px";
+      stackContainer.style.height = this.cardDimensions.height + "px";
+      stackContainer.style.perspective = "600px";
+      this.container.appendChild(stackContainer);
+      this.stackContainer = stackContainer;
+
+      // 初始化所有卡片状态
+      this.cards.forEach((card) => {
+        this.initCardState(card.id);
+      });
+
+      // 创建卡片 DOM
+      this.renderCards();
+
+      // 添加全局事件监听
+      document.addEventListener("mousemove", (e) => this.handleGlobalDrag(e));
+      document.addEventListener("mouseup", (e) => this.handleGlobalDragEnd(e));
+      document.addEventListener("touchmove", (e) => this.handleGlobalDrag(e), {
+        passive: false,
+      });
+      document.addEventListener("touchend", (e) => this.handleGlobalDragEnd(e));
+    }
+
+    // 渲染卡片
+    renderCards() {
+      // 清空容器
+      this.stackContainer.innerHTML = "";
+      this.cardElements.clear();
+
+      // 创建每个卡片
+      this.cards.forEach((card, index) => {
+        const cardElement = this.createCardElement(card, index);
+        this.stackContainer.appendChild(cardElement);
+        this.cardElements.set(card.id, cardElement);
+      });
+
+      // 更新所有卡片样式
+      this.updateCards();
+    }
+
+    // 创建卡片元素
+    createCardElement(card, index) {
+      const cardDiv = document.createElement("div");
+      cardDiv.className = "stack-card";
+      cardDiv.dataset.cardId = card.id;
+
+      const cardInner = document.createElement("div");
+      cardInner.className = "stack-card-inner";
+
+      // 图片容器
+      const imgContainer = document.createElement("div");
+      imgContainer.className = "stack-card-img-container";
+
+      const img = document.createElement("img");
+      img.src = card.img;
+      img.alt = "card-" + card.id;
+      imgContainer.appendChild(img);
+
+      // 文案容器
+      const textContainer = document.createElement("div");
+      textContainer.className = "stack-card-text-container";
+      const text = document.createElement("p");
+      text.className = "stack-card-text";
+      text.textContent = card.text || card.title || "";
+      textContainer.appendChild(text);
+
+      cardInner.appendChild(imgContainer);
+      cardInner.appendChild(textContainer);
+      cardDiv.appendChild(cardInner);
+
+      // 添加事件监听
+      cardDiv.addEventListener("mousedown", (e) =>
+        this.handleDragStart(e, card.id)
+      );
+      cardDiv.addEventListener("touchstart", (e) =>
+        this.handleDragStart(e, card.id)
+      );
+      cardDiv.addEventListener("click", (e) => this.handleClick(e, card.id));
+
+      return cardDiv;
+    }
+
+    // 更新所有卡片样式
+    updateCards() {
+      this.cards.forEach((card, index) => {
+        const cardElement = this.cardElements.get(card.id);
+        if (!cardElement) return;
+
+        const state = this.initCardState(card.id);
+        const isTopCard = index === this.cards.length - 1;
+        const isDragging = this.draggingCardId === card.id;
+
+        // 计算变换
+        const rotation = this.getRotation(index);
+        const scale = this.getScale(index);
+
+        const transform = `
+            translate(${state.x}px, ${state.y}px)
+            rotateX(${state.rotateX}deg)
+            rotateY(${state.rotateY}deg)
+            rotateZ(${rotation}deg)
+            scale(${scale})
+          `;
+
+        // 应用样式
+        cardElement.style.transform = transform;
+        cardElement.style.transformOrigin = "90% 90%";
+        cardElement.style.zIndex = index + 1;
+        cardElement.style.cursor = isTopCard
+          ? isDragging
+            ? "grabbing"
+            : "grab"
+          : "default";
+
+        // 添加/移除拖拽类
+        if (isDragging) {
+          cardElement.classList.add("is-dragging");
+        } else {
+          cardElement.classList.remove("is-dragging");
+        }
+      });
+    }
+
+    // 全局拖拽处理
+    handleGlobalDrag(e) {
+      if (!this.draggingCardId) return;
+
+      e.preventDefault();
+      const clientX = e.clientX || (e.touches && e.touches[0]?.clientX);
+      const clientY = e.clientY || (e.touches && e.touches[0]?.clientY);
+
+      if (clientX === undefined || clientY === undefined) return;
+
+      const state = this.initCardState(this.draggingCardId);
+      const deltaX = clientX - this.dragStartPos.x;
+      const deltaY = clientY - this.dragStartPos.y;
+
+      state.x = deltaX;
+      state.y = deltaY;
+      state.rotateX = (deltaY / 100) * 60;
+      state.rotateY = (deltaX / 100) * -60;
+
+      // 更新样式
+      this.updateCards();
+    }
+
+    // 全局拖拽结束处理
+    handleGlobalDragEnd(e) {
+      if (!this.draggingCardId) return;
+
+      const cardId = this.draggingCardId;
+      const state = this.initCardState(cardId);
+
+      const deltaX = Math.abs(state.x);
+      const deltaY = Math.abs(state.y);
+
+      if (deltaX > this.sensitivity || deltaY > this.sensitivity) {
+        this.sendToBack(cardId);
+      } else {
+        // 重置位置
+        state.x = 0;
+        state.y = 0;
+        state.rotateX = 0;
+        state.rotateY = 0;
+        this.updateCards();
+      }
+
+      this.draggingCardId = null;
+      this.updateCards();
+    }
+
+    // 处理拖拽开始
+    handleDragStart(e, cardId) {
+      // 只允许拖拽最顶层的卡片（最后一个）
+      const topCardId = this.cards[this.cards.length - 1]?.id;
+      if (cardId !== topCardId) return;
+
+      e.preventDefault();
+      e.stopPropagation();
+
+      this.draggingCardId = cardId;
+      const clientX = e.clientX || (e.touches && e.touches[0]?.clientX);
+      const clientY = e.clientY || (e.touches && e.touches[0]?.clientY);
+
+      this.dragStartPos = { x: clientX, y: clientY };
+      this.updateCards();
+    }
+
+    // 将卡片移到底部
+    sendToBack(id) {
+      const index = this.cards.findIndex((card) => card.id === id);
+      if (index !== -1) {
+        // 将卡片从当前位置移除
+        const [card] = this.cards.splice(index, 1);
+        // 放到数组开头（最底层）
+        this.cards.unshift(card);
+
+        // 重置状态
+        const state = this.initCardState(id);
+        state.x = 0;
+        state.y = 0;
+        state.rotateX = 0;
+        state.rotateY = 0;
+
+        // 重新渲染
+        this.renderCards();
+      }
+    }
+
+    // 处理点击
+    handleClick(e, cardId) {
+      // 如果刚刚拖拽过，不触发点击
+      if (this.draggingCardId === cardId) {
+        e.preventDefault();
+        return;
+      }
+
+      if (this.sendToBackOnClick) {
+        this.sendToBack(cardId);
+      }
+    }
+
+    // 计算旋转角度
+    getRotation(index) {
+      const baseRotation = (this.cards.length - index - 1) * 4;
+      const randomRotation = this.randomRotation ? Math.random() * 10 - 5 : 0;
+      return baseRotation + randomRotation;
+    }
+
+    // 计算缩放
+    getScale(index) {
+      return 1 + index * 0.06 - this.cards.length * 0.06;
+    }
+  }
+
+  // 初始化 Stack 组件
+  document.addEventListener("DOMContentLoaded", function () {
+    const container = document.getElementById("stack-container");
+    if (container) {
+      const images = [
+        {
+          id: 1,
+          img: "https://images.unsplash.com/photo-1480074568708-e7b720bb3f09?q=80&w=500&auto=format",
+          text: "Beautiful landscape with mountains and lakes",
+        },
+        {
+          id: 2,
+          img: "https://images.unsplash.com/photo-1449844908441-8829872d2607?q=80&w=500&auto=format",
+          text: "Modern architecture in urban setting",
+        },
+        {
+          id: 3,
+          img: "https://images.unsplash.com/photo-1452626212852-811d58933cae?q=80&w=500&auto=format",
+          text: "Serene forest path through nature",
+        },
+        {
+          id: 4,
+          img: "https://images.unsplash.com/photo-1572120360610-d971b9d7767c?q=80&w=500&auto=format",
+          text: "Cozy interior design with warm lighting",
+        },
+      ];
+
+      new StackCards(container, {
+        randomRotation: true,
+        sensitivity: 180,
+        sendToBackOnClick: false,
+        cardDimensions: { width: 200, height: 200, textWidth: 200 },
+        cardsData: images,
+      });
+    }
+  });
+</script>
+
+<style>
+  .stack-container {
+    position: relative;
+    margin: 0 auto;
+  }
+
+  .stack-card {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: none;
+  }
+
+  .stack-card.is-dragging {
+    transition: none;
+  }
+
+  .stack-card-inner {
+    width: 100%;
+    height: 100%;
+    border-radius: 16px;
+    overflow: hidden;
+    border: 4px solid white;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    display: flex;
+    flex-direction: row;
+    background: #fff;
+  }
+
+  .stack-card-img-container {
+    flex: 0 0 200px;
+    width: 200px;
+    height: 100%;
+    overflow: hidden;
+  }
+
+  .stack-card-img-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    pointer-events: none;
+  }
+
+  .stack-card-text-container {
+    flex: 1;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #fff;
+    min-width: 200px;
+  }
+
+  .stack-card-text {
+    margin: 0;
+    padding: 0;
+    color: #333;
+    font-size: 16px;
+    line-height: 1.5;
+    text-align: left;
+    pointer-events: none;
+  }
+
+  .stack-card:active {
+    cursor: grabbing !important;
+  }
+</style>

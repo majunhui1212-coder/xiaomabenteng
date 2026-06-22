@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>毛玻璃导航栏</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      }
+
+      .nav-container {
+        position: relative;
+        padding: 15px 30px;
+        height: 85px;
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border-radius: 20px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        overflow: visible;
+        display: flex;
+        align-items: center;
+      }
+
+      .nav-container:hover {
+        padding: 15px 50px;
+        height: 85px;
+      }
+
+      .nav-list {
+        display: flex;
+        gap: 25px;
+        align-items: center;
+        list-style: none;
+      }
+
+      .nav-item {
+        position: relative;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      .nav-item img {
+        width: 55px;
+        height: 55px;
+        border-radius: 12px;
+        border: 2px solid rgba(255, 255, 255, 0.5);
+        background: rgba(255, 255, 255, 0.1);
+        padding: 8px;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        cursor: pointer;
+      }
+
+      .nav-item.active img {
+        width: 110px;
+        height: 110px;
+        transform: translateY(-25px);
+        z-index: 10;
+      }
+
+      .nav-item.nearby img {
+        width: 80px;
+        height: 80px;
+        transform: translateY(-10px);
+      }
+
+      .nav-item.nearby2 img {
+        width: 65px;
+        height: 65px;
+        transform: translateY(-5px);
+      }
+
+      .nav-item img:hover {
+        border-color: rgba(255, 255, 255, 0.8);
+        box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="nav-container">
+      <ul class="nav-list">
+        <li class="nav-item">
+          <img
+            src="https://api.iconify.design/mdi/home.svg?color=white"
+            alt="首页"
+          />
+        </li>
+        <li class="nav-item">
+          <img
+            src="https://api.iconify.design/mdi/search.svg?color=white"
+            alt="搜索"
+          />
+        </li>
+        <li class="nav-item">
+          <img
+            src="https://api.iconify.design/mdi/heart.svg?color=white"
+            alt="收藏"
+          />
+        </li>
+        <li class="nav-item">
+          <img
+            src="https://api.iconify.design/mdi/star.svg?color=white"
+            alt="推荐"
+          />
+        </li>
+        <li class="nav-item">
+          <img
+            src="https://api.iconify.design/mdi/bell.svg?color=white"
+            alt="通知"
+          />
+        </li>
+        <li class="nav-item">
+          <img
+            src="https://api.iconify.design/mdi/cog.svg?color=white"
+            alt="设置"
+          />
+        </li>
+        <li class="nav-item">
+          <img
+            src="https://api.iconify.design/mdi/account.svg?color=white"
+            alt="个人"
+          />
+        </li>
+      </ul>
+    </nav>
+    <script>
+      const navItems = document.querySelectorAll(".nav-item");
+      const navContainer = document.querySelector(".nav-container");
+
+      function updateHoverState(hoveredIndex) {
+        navItems.forEach((item, index) => {
+          item.classList.remove("active", "nearby", "nearby2");
+          item.style.transform = "translateY(0)";
+
+          if (index === hoveredIndex) {
+            item.classList.add("active");
+            item.style.transform = "translateY(-25px)";
+          } else if (Math.abs(index - hoveredIndex) === 1) {
+            item.classList.add("nearby");
+            item.style.transform = "translateY(-10px)";
+          } else if (Math.abs(index - hoveredIndex) === 2) {
+            item.classList.add("nearby2");
+            item.style.transform = "translateY(-5px)";
+          }
+        });
+      }
+
+      function clearHoverState() {
+        navItems.forEach((item) => {
+          item.classList.remove("active", "nearby", "nearby2");
+          item.style.transform = "translateY(0)";
+        });
+      }
+
+      navItems.forEach((item, index) => {
+        item.addEventListener("mouseenter", () => updateHoverState(index));
+        item.addEventListener("mouseleave", clearHoverState);
+      });
+    </script>
+  </body>
+</html>

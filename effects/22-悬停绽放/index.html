@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        background-color: #f0f0f0;
+        padding: 20px;
+      }
+
+      .image-container {
+        position: relative;
+        width: 100%;
+        max-width: 800px;
+        overflow: hidden;
+        border-radius: 20px;
+        transition: all 0.5s ease-in-out;
+      }
+
+      .image-container:hover {
+        border-radius: 0;
+        transform: scale(1.05);
+      }
+
+      .image-container img {
+        width: 100%;
+        height: auto;
+        display: block;
+        border-radius: 20px;
+        transition: all 0.5s ease-in-out;
+      }
+
+      .image-container:hover img {
+        border-radius: 0;
+      }
+
+      .image-container:hover {
+        border-radius: 0;
+        transform: scale(1.05);
+      }
+
+      .content {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        text-align: center;
+        color: white;
+        z-index: 1;
+      }
+
+      h3 {
+        font-size: 36px;
+        font-weight: bold;
+        margin-bottom: 20px;
+        opacity: 1;
+        transition: all 0.5s ease-in-out;
+      }
+
+      p {
+        font-size: 18px;
+        max-width: 600px;
+        margin: 0 auto;
+        opacity: 0;
+        transform: scale(0);
+        transition: all 0.5s ease-in-out;
+      }
+
+      .image-container:hover p {
+        opacity: 1;
+        transform: scale(1);
+      }
+
+      .border {
+        position: absolute;
+        top: 20px;
+        left: 20px;
+        right: 20px;
+        bottom: 20px;
+        border: 2px solid transparent;
+        transition: all 0.5s ease-in-out;
+        z-index: 2;
+      }
+
+      .image-container:hover .border {
+        border-color: white;
+        animation: rotateBorder 1s ease-in-out forwards;
+      }
+
+      @keyframes rotateBorder {
+        0% {
+          transform: rotate(45deg);
+          border-color: transparent;
+        }
+        50% {
+          transform: rotate(0deg);
+          border-color: white;
+        }
+        100% {
+          transform: rotate(0deg);
+          border-color: white;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="image-container">
+      <div class="border"></div>
+      <img src="https://picsum.photos/1920/720?random=100" alt="背景图片" />
+      <div class="content">
+        <h3>标题</h3>
+        <p>段落内容</p>
+      </div>
+    </div>
+  </body>
+</html>

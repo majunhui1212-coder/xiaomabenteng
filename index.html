@@ -1,10 +1,199 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-CN">
 <head>
-    <title>我的个人网站</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CSS 动效魔法工坊 | 个人前端动效 Showcase</title>
+  <meta name="description" content="一个精心整理、分类的 CSS 动效展示平台，包含毛玻璃、3D、文字融合、网格扭曲等 42 个炫酷动效的实时预览和多端模拟测试。">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>你好，运加一！</h1>
-    <p>这是我的第一个 GitHub Pages 网站。</p>
+
+  <!-- Background Orbs -->
+  <div class="bg-orbs">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+  </div>
+
+  <!-- GALLERY MAIN CONTAINER -->
+  <div class="container">
+    
+    <!-- Header Area -->
+    <header>
+      <div class="logo-section">
+        <h1>CSS 动效展示中心</h1>
+        <p>探索、交互和预览精美的现代 CSS 动效与网页布局设计</p>
+      </div>
+      
+      <div class="header-actions">
+        <!-- Stats -->
+        <div class="stats-badge" id="statsBadge">
+          已整理动效 <span id="totalEffectsCount">0</span> 个
+        </div>
+        
+        <!-- Theme Toggle -->
+        <button class="btn-toggle-theme" id="btnToggleTheme" title="切换深色/浅色模式" aria-label="Toggle Theme">
+          <!-- Light Icon (Sun) -->
+          <svg class="light-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+          </svg>
+          <!-- Dark Icon (Moon) -->
+          <svg class="dark-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- Search and Categories Filter -->
+    <section class="search-filter-section">
+      <div class="search-container">
+        <!-- Search Icon -->
+        <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+        <input type="text" class="search-input" id="searchInput" placeholder="搜索动效名称、序号、分类或代码文件..." aria-label="Search effects">
+      </div>
+      
+      <!-- Category Tabs (Dynamically filled) -->
+      <nav class="category-tabs" id="categoryTabs" aria-label="Category Filters">
+        <!-- Tabs injected by JS -->
+      </nav>
+    </section>
+
+    <!-- Cards Grid -->
+    <main class="effects-grid" id="effectsGrid">
+      <!-- Grid items injected by JS -->
+    </main>
+
+    <!-- Footer -->
+    <footer class="main-footer">
+      <p>&copy; 2026 CSS 动效魔法工坊. Created with Antigravity AI.</p>
+    </footer>
+
+  </div>
+
+  <!-- PLAYGROUND / SIMULATOR IFRAME OVERLAY VIEW -->
+  <section class="playground-view" id="playgroundView">
+    <div class="playground-container">
+      
+      <!-- Sidebar Quick Navigator -->
+      <aside class="playground-sidebar" id="playgroundSidebar">
+        <div class="sidebar-header">
+          <button class="btn-back-home" id="btnBackHome">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="19" y1="12" x2="5" y2="12"></line>
+              <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+            返回大厅
+          </button>
+        </div>
+        
+        <div class="sidebar-title-section">
+          <span id="activeEffectCategory">-</span>
+          <h3 id="activeEffectTitle">CSS Effect</h3>
+          <span class="sidebar-item-index" id="activeEffectIndex">#00</span>
+        </div>
+        
+        <div class="sidebar-list-container">
+          <h4 class="sidebar-list-title">当前列表</h4>
+          <ul class="sidebar-effects-list" id="sidebarEffectsList">
+            <!-- Sidebar list items injected by JS -->
+          </ul>
+        </div>
+      </aside>
+
+      <!-- Interactive Playground Workspace -->
+      <div class="playground-workspace">
+        
+        <!-- Workspace Top Control Bar -->
+        <header class="workspace-toolbar">
+          <div class="toolbar-info">
+            <h2>动效预览工坊</h2>
+          </div>
+          
+          <div class="toolbar-controls">
+            <!-- Viewport Simulation Sizers -->
+            <div class="viewport-selectors">
+              <button class="btn-viewport active" id="btnViewportDesktop" title="桌面端视图 (100% 宽度)">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                  <line x1="8" y1="21" x2="16" y2="21"></line>
+                  <line x1="12" y1="17" x2="12" y2="21"></line>
+                </svg>
+                Desktop
+              </button>
+              
+              <button class="btn-viewport" id="btnViewportTablet" title="平板端视图 (768px 宽度)">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="4" y="2" width="16" height="20" rx="2" ry="2"></rect>
+                  <line x1="12" y1="18" x2="12.01" y2="18"></line>
+                </svg>
+                Tablet
+              </button>
+              
+              <button class="btn-viewport" id="btnViewportMobile" title="手机端视图 (375px 宽度)">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect>
+                  <line x1="12" y1="18" x2="12.01" y2="18"></line>
+                </svg>
+                Mobile
+              </button>
+            </div>
+            
+            <!-- Quick Actions -->
+            <div class="toolbar-actions">
+              <button class="btn-action" id="btnRefresh" title="重新加载此效果">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="23 4 23 10 17 10"></polyline>
+                  <polyline points="1 20 1 14 7 14"></polyline>
+                  <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+                </svg>
+                刷新
+              </button>
+              
+              <button class="btn-action btn-action-primary" id="btnNewTab" title="在新窗口中独立打开此效果">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                  <polyline points="15 3 21 3 21 9"></polyline>
+                  <line x1="10" y1="14" x2="21" y2="3"></line>
+                </svg>
+                新窗口打开
+              </button>
+            </div>
+          </div>
+        </header>
+
+        <!-- Preview Simulation Content Panel -->
+        <main class="preview-panel">
+          <!-- Device frame wrapper -->
+          <div class="device-wrapper device-desktop" id="deviceWrapper">
+            <!-- Simulated Loading Spinner -->
+            <div class="iframe-loader" id="iframeLoader">
+              <div class="spinner"></div>
+              <p>正在载入动效...</p>
+            </div>
+            
+            <iframe id="playgroundIframe" name="playgroundIframe" src="about:blank" title="Effect Preview Screen"></iframe>
+          </div>
+        </main>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- JS Scripts -->
+  <script src="effects_data.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>

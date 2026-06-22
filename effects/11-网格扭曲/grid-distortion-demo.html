@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Grid Distortion Background</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        width: 100vw;
+        height: 100vh;
+        overflow-x: hidden;
+        overflow-y: auto;
+        background: #000;
+      }
+
+      .grid-distortion-container {
+        width: 100%;
+        height: 50vh;
+        overflow: visible;
+        position: relative;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="gridDistortionContainer" class="grid-distortion-container"></div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script>
+      // 顶点着色器
+      const vertexShader = `
+        uniform float time;
+        varying vec2 vUv;
+        varying vec3 vPosition;
+
+        void main() {
+          vUv = uv;
+          vPosition = position;
+          gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+        }
+      `;
+
+      // 片段着色器
+      const fragmentShader = `
+        uniform sampler2D uDataTexture;
+        uniform sampler2D uTexture;
+        uniform vec4 resolution;
+        varying vec2 vUv;
+
+        void main() {
+          vec2 uv = vUv;
+          vec4 offset = texture2D(uDataTexture, vUv);
+          gl_FragColor = texture2D(uTexture, uv - 0.02 * offset.rg);
+        }
+      `;
+
+      // GridDistortion 类
+      class GridDistortion {
+        constructor(container, options = {}) {
+          this.container = container;
+          this.options = {
+            grid: options.grid || 10,
+            mouse: options.mouse || 0.1,
+            strength: options.strength || 0.15,
+            relaxation: options.relaxation || 0.9,
+            imageSrc:
+              options.imageSrc ||
+              "https://images.unsplash.com/photo-1519681393784-d120267933ba?w=1920&h=1080&fit=crop",
+          };
+
+          this.imageAspect = 1;
+          this.camera = null;
+          this.raf = null;
+          this.setup();
+        }
+
+        setup() {
+          const scene = new THREE.Scene();
+          const renderer = new THREE.WebGLRenderer({
+            antialias: true,
+            alpha: true,
+            powerPreference: "high-performance",
+          });
+          renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+          this.container.appendChild(renderer.domElement);
+
+          const camera = new THREE.OrthographicCamera(0, 0, 0, 0, -1000, 1000);
+          camera.position.z = 2;
+          this.camera = camera;
+
+          const uniforms = {
+            time: { value: 0 },
+            resolution: { value: new THREE.Vector4() },
+            uTexture: { value: null },
+            uDataTexture: { value: null },
+          };
+
+          this.uniforms = uniforms;
+
+          // 加载纹理
+          const textureLoader = new THREE.TextureLoader();
+          textureLoader.load(
+            this.options.imageSrc,
+            (texture) => {
+              texture.minFilter = THREE.LinearFilter;
+              this.imageAspect = texture.image.width / texture.image.height;
+              uniforms.uTexture.value = texture;
+              this.handleResize();
+            },
+            undefined,
+            (error) => {
+              console.error("图片加载失败:", error);
+            }
+          );
+
+          // 创建数据纹理
+          const size = this.options.grid;
+          const data = new Float32Array(4 * size * size);
+          for (let i = 0; i < size * size; i++) {
+            data[i * 4] = Math.random() * 255 - 125;
+            data[i * 4 + 1] = Math.random() * 255 - 125;
+          }
+
+          const dataTexture = new THREE.DataTexture(
+            data,
+            size,
+            size,
+            THREE.RGBAFormat,
+            THREE.FloatType
+          );
+          dataTexture.needsUpdate = true;
+          uniforms.uDataTexture.value = dataTexture;
+          this.dataTexture = dataTexture;
+
+          // 创建材质和几何体
+          const material = new THREE.ShaderMaterial({
+            side: THREE.DoubleSide,
+            uniforms,
+            vertexShader,
+            fragmentShader,
+          });
+          this.material = material;
+
+          const geometry = new THREE.PlaneGeometry(1, 1, size - 1, size - 1);
+          this.geometry = geometry;
+
+          const plane = new THREE.Mesh(geometry, material);
+          scene.add(plane);
+          this.plane = plane;
+          this.scene = scene;
+          this.renderer = renderer;
+
+          // 鼠标状态
+          this.mouseState = {
+            x: 0,
+            y: 0,
+            prevX: 0,
+            prevY: 0,
+            vX: 0,
+            vY: 0,
+          };
+
+          // 绑定事件
+          this.handleMouseMove = (e) => {
+            const rect = this.container.getBoundingClientRect();
+            const x = (e.clientX - rect.left) / rect.width;
+            const y = 1 - (e.clientY - rect.top) / rect.height;
+            this.mouseState.vX = x - this.mouseState.prevX;
+            this.mouseState.vY = y - this.mouseState.prevY;
+            Object.assign(this.mouseState, {
+              x,
+              y,
+              prevX: x,
+              prevY: y,
+            });
+          };
+
+          this.handleMouseLeave = () => {
+            this.dataTexture.needsUpdate = true;
+            Object.assign(this.mouseState, {
+              x: 0,
+              y: 0,
+              prevX: 0,
+              prevY: 0,
+              vX: 0,
+              vY: 0,
+            });
+          };
+
+          this.handleResize = () => {
+            const width = this.container.offsetWidth;
+            const height = this.container.offsetHeight;
+            const containerAspect = width / height;
+            const imageAspect = this.imageAspect;
+
+            this.renderer.setSize(width, height);
+
+            // 计算缩放比例，让图片宽度占满容器，高度自适应
+            // 平面的宽度应该匹配容器的宽度（containerAspect）
+            const scale = containerAspect / imageAspect;
+            this.plane.scale.set(imageAspect * scale, scale, 1);
+
+            // 计算图片的实际显示高度（相对于容器宽度）
+            // 相机视口宽度固定为容器宽度，高度自适应图片实际显示高度
+            const frustumWidth = containerAspect; // 固定为容器宽度
+            const frustumHeight = containerAspect / imageAspect; // 图片实际显示高度
+            this.camera.left = -frustumWidth / 2;
+            this.camera.right = frustumWidth / 2;
+            this.camera.top = frustumHeight / 2;
+            this.camera.bottom = -frustumHeight / 2;
+            this.camera.updateProjectionMatrix();
+
+            this.uniforms.resolution.value.set(width, height, 1, 1);
+          };
+
+          this.container.addEventListener("mousemove", this.handleMouseMove);
+          this.container.addEventListener("mouseleave", this.handleMouseLeave);
+          window.addEventListener("resize", this.handleResize);
+          this.handleResize();
+
+          // 动画循环
+          this.animate();
+        }
+
+        animate() {
+          this.raf = requestAnimationFrame(() => this.animate());
+          this.uniforms.time.value += 0.05;
+
+          const size = this.options.grid;
+          const data = this.dataTexture.image.data;
+
+          // 应用松弛
+          for (let i = 0; i < size * size; i++) {
+            data[i * 4] *= this.options.relaxation;
+            data[i * 4 + 1] *= this.options.relaxation;
+          }
+
+          // 应用鼠标影响
+          const gridMouseX = size * this.mouseState.x;
+          const gridMouseY = size * this.mouseState.y;
+          const maxDist = size * this.options.mouse;
+
+          for (let i = 0; i < size; i++) {
+            for (let j = 0; j < size; j++) {
+              const distSq =
+                Math.pow(gridMouseX - i, 2) + Math.pow(gridMouseY - j, 2);
+              if (distSq < maxDist * maxDist) {
+                const index = 4 * (i + size * j);
+                const power = Math.min(maxDist / Math.sqrt(distSq), 10);
+                data[index] +=
+                  this.options.strength * 100 * this.mouseState.vX * power;
+                data[index + 1] -=
+                  this.options.strength * 100 * this.mouseState.vY * power;
+              }
+            }
+          }
+
+          this.dataTexture.needsUpdate = true;
+          this.renderer.render(this.scene, this.camera);
+        }
+
+        destroy() {
+          if (this.raf) {
+            cancelAnimationFrame(this.raf);
+          }
+          if (this.container) {
+            this.container.removeEventListener(
+              "mousemove",
+              this.handleMouseMove
+            );
+            this.container.removeEventListener(
+              "mouseleave",
+              this.handleMouseLeave
+            );
+          }
+          window.removeEventListener("resize", this.handleResize);
+          if (this.renderer) this.renderer.dispose();
+          if (this.geometry) this.geometry.dispose();
+          if (this.material) this.material.dispose();
+          if (this.dataTexture) this.dataTexture.dispose();
+          if (this.uniforms.uTexture.value)
+            this.uniforms.uTexture.value.dispose();
+        }
+      }
+
+      // 初始化
+      window.addEventListener("load", () => {
+        const container = document.getElementById("gridDistortionContainer");
+        new GridDistortion(container, {
+          grid: 10,
+          mouse: 0.1,
+          strength: 0.15,
+          relaxation: 0.9,
+          imageSrc:
+            "https://images.unsplash.com/photo-1519681393784-d120267933ba?w=1920&h=1080&fit=crop",
+          // "images/Snipaste_2025-12-25_11-11-19.png",
+        });
+      });
+    </script>
+  </body>
+</html>

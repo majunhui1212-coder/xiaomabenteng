@@ -1,0 +1,96 @@
+/* 扬州冬日美食专题页面样式 */
+@charset "utf-8";
+
+/* ==================== CSS变量定义 ==================== */
+:root {
+  /* 暖色调配色 */
+  --warm-primary: #d97706;
+  --warm-secondary: #f59e0b;
+  --warm-accent: #fbbf24;
+  --warm-bg-light: #fef3c7;
+  --warm-bg-dark: #92400e;
+  --warm-text: #78350f;
+  --warm-text-light: #fef3c7;
+  --warm-border: #fcd34d;
+
+  /* 间距 */
+  --spacing-xs: 10px;
+  --spacing-sm: 20px;
+  --spacing-md: 40px;
+  --spacing-lg: 60px;
+  --spacing-xl: 80px;
+
+}
+
+/* ==================== 基础样式 ==================== */
+.wrapper {
+  width: 100%;
+  min-height: 100vh;
+  background: linear-gradient(180deg, #fef3c7 0%, #fde68a 50%, #fcd34d 100%);
+}
+
+/* ==================== 头区样式 ==================== */
+.header-section {
+  position: relative;
+  width: 100%;
+  height: 720px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(
+    135deg,
+    rgba(217, 119, 6, 0.9) 0%,
+    rgba(245, 158, 11, 0.9) 50%,
+    rgba(251, 191, 36, 0.9) 100%
+  );
+}
+
+.header-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url("https://picsum.photos/1920/720?random=100");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  opacity: 0.6;
+  z-index: 1;
+}
+
+.snow-container,
+.steam-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.header-content {
+  position: relative;
+  z-index: 3;
+  text-align: center;
+  color: #fff;
+  padding: var(--spacing-md);
+}
+
+.header-title {
+  font-size: 64px;
+  font-weight: 700;
+  margin-bottom: var(--spacing-sm);
+  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3);
+  color: var(--warm-text-light);
+}
+
+.header-subtitle {
+  font-size: 28px;
+  font-weight: 400;
+  text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.3);
+  color: var(--warm-text-light);
+}
+

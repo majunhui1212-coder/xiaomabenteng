@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Floating Lines Demo</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div id="floatingLinesContainer" class="floating-lines-container"></div>
+
+    <div class="controls">
+      <h3>控制面板</h3>
+
+      <div class="control-group">
+        <label>
+          <input type="checkbox" id="enableTop" checked /> 启用顶部波浪
+        </label>
+      </div>
+
+      <div class="control-group">
+        <label>
+          <input type="checkbox" id="enableMiddle" checked /> 启用中间波浪
+        </label>
+      </div>
+
+      <div class="control-group">
+        <label>
+          <input type="checkbox" id="enableBottom" checked /> 启用底部波浪
+        </label>
+      </div>
+
+      <div class="control-group">
+        <label>
+          动画速度: <span id="speedValue">1.0</span>
+          <input
+            type="range"
+            id="animationSpeed"
+            min="0"
+            max="2"
+            step="0.1"
+            value="1"
+          />
+        </label>
+      </div>
+
+      <div class="control-group">
+        <label>
+          <input type="checkbox" id="interactive" checked /> 交互模式
+        </label>
+      </div>
+
+      <div class="control-group">
+        <label>
+          弯曲半径: <span id="bendRadiusValue">5.0</span>
+          <input
+            type="range"
+            id="bendRadius"
+            min="1"
+            max="20"
+            step="0.5"
+            value="5"
+          />
+        </label>
+      </div>
+
+      <div class="control-group">
+        <label>
+          弯曲强度: <span id="bendStrengthValue">-0.5</span>
+          <input
+            type="range"
+            id="bendStrength"
+            min="-2"
+            max="2"
+            step="0.1"
+            value="-0.5"
+          />
+        </label>
+      </div>
+
+      <div class="control-group">
+        <label>
+          <input type="checkbox" id="parallax" checked /> 视差效果
+        </label>
+      </div>
+
+      <div class="control-group">
+        <label>
+          视差强度: <span id="parallaxStrengthValue">0.2</span>
+          <input
+            type="range"
+            id="parallaxStrength"
+            min="0"
+            max="1"
+            step="0.05"
+            value="0.2"
+          />
+        </label>
+      </div>
+
+      <div class="control-group">
+        <label>
+          线条数量:
+          <input type="number" id="lineCount" min="1" max="20" value="6" />
+        </label>
+      </div>
+
+      <div class="control-group">
+        <label>
+          线条间距:
+          <input type="number" id="lineDistance" min="1" max="20" value="5" />
+        </label>
+      </div>
+
+      <div class="control-group">
+        <label>
+          渐变色 (用逗号分隔，如: #E947F5,#2F4BA2):
+          <input type="text" id="linesGradient" placeholder="#E947F5,#2F4BA2" />
+        </label>
+      </div>
+    </div>
+
+    <div class="info">
+      <div>移动鼠标查看交互效果</div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="style.js"></script>
+  </body>
+</html>

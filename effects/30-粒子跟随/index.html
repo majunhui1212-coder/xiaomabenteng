@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>粒子跟随鼠标</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+        min-height: 100vh;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: Arial, sans-serif;
+      }
+
+      canvas {
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 1;
+      }
+
+      .title {
+        position: relative;
+        z-index: 2;
+        color: #fff;
+        font-size: 48px;
+        font-weight: bold;
+        text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+        pointer-events: none;
+        text-align: center;
+      }
+
+      .subtitle {
+        position: relative;
+        z-index: 2;
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 18px;
+        margin-top: 20px;
+        pointer-events: none;
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="title">移动鼠标试试看</div>
+    <div class="subtitle">粒子会跟随你的鼠标移动</div>
+    <canvas id="canvas"></canvas>
+    <script>
+      const canvas = document.getElementById("canvas");
+      const ctx = canvas.getContext("2d");
+
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+
+      let particles = [];
+      let mouse = { x: null, y: null };
+
+      window.addEventListener("resize", () => {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+      });
+
+      window.addEventListener("mousemove", (e) => {
+        mouse.x = e.x;
+        mouse.y = e.y;
+
+        for (let i = 0; i < 3; i++) {
+          particles.push(new Particle());
+        }
+      });
+
+      class Particle {
+        constructor() {
+          this.x = mouse.x;
+          this.y = mouse.y;
+          this.size = Math.random() * 5 + 2;
+          this.speedX = Math.random() * 3 - 1.5;
+          this.speedY = Math.random() * 3 - 1.5;
+          this.color = `hsl(${Math.random() * 360}, 100%, 50%)`;
+          this.life = 1;
+          this.decay = Math.random() * 0.02 + 0.01;
+        }
+
+        update() {
+          this.x += this.speedX;
+          this.y += this.speedY;
+          this.size *= 0.97;
+          this.life -= this.decay;
+        }
+
+        draw() {
+          ctx.globalAlpha = this.life;
+          ctx.fillStyle = this.color;
+          ctx.beginPath();
+          ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+          ctx.fill();
+
+          ctx.shadowBlur = 15;
+          ctx.shadowColor = this.color;
+          ctx.fill();
+          ctx.shadowBlur = 0;
+        }
+      }
+
+      function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        for (let i = particles.length - 1; i >= 0; i--) {
+          particles[i].update();
+          particles[i].draw();
+
+          if (particles[i].life <= 0 || particles[i].size <= 0.5) {
+            particles.splice(i, 1);
+          }
+        }
+
+        requestAnimationFrame(animate);
+      }
+
+      animate();
+    </script>
+  </body>
+</html>

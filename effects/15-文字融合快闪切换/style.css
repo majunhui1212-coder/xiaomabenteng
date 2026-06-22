@@ -1,0 +1,56 @@
+:root {
+    --speed: 8s;
+    --wordCount: 4;
+}
+
+.g-container {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    background: #000;
+    font-family: 'Montserrat', sans-serif;
+    color: #fff;
+    font-size: 120px;
+    filter: contrast(15);
+}
+.word {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    animation: change var(--speed) infinite ease-in-out;
+    white-space: nowrap;
+}
+
+/* 为每个word元素设置不同的动画延迟 */
+/* 计算公式: delay = (speed / (wordCount + 1)) * i - speed */
+/* speed=8s, wordCount=4, 所以每个间隔 = 8/5 = 1.6s */
+.word:nth-child(1) {
+    animation-delay: -8s; /* (8/5)*0 - 8 = -8s */
+}
+
+.word:nth-child(2) {
+    animation-delay: -6.4s; /* (8/5)*1 - 8 = -6.4s */
+}
+
+.word:nth-child(3) {
+    animation-delay: -4.8s; /* (8/5)*2 - 8 = -4.8s */
+}
+
+.word:nth-child(4) {
+    animation-delay: -3.2s; /* (8/5)*3 - 8 = -3.2s */
+}
+
+@keyframes change {
+    0%,
+    5%,
+    100% {
+        filter: blur(0px);
+        opacity: 1;
+    }
+    50%,
+    80% {
+        filter: blur(80px);
+        opacity: 0;
+    }
+}

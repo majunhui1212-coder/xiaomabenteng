@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>打字机效果 Demo</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: "PingFang SC", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background: #fcfaf8;
+      color: #26251e;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 60px 20px;
+    }
+
+    h1 {
+      font-size: 32px;
+      font-weight: 500;
+      margin-bottom: 48px;
+      letter-spacing: 0.4px;
+    }
+
+    .demo-section {
+      width: 100%;
+      max-width: 800px;
+      margin-bottom: 48px;
+    }
+
+    .demo-section h2 {
+      font-size: 18px;
+      font-weight: 500;
+      color: #504f49;
+      margin-bottom: 16px;
+      letter-spacing: 0.2px;
+    }
+
+    .demo-box {
+      background: #fff;
+      border: 1px solid #e8e6e3;
+      border-radius: 12px;
+      padding: 40px;
+      min-height: 120px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* ========== 打字机效果核心样式 ========== */
+
+    /* 方式一：逐字显示（适合短句） */
+    .typewriter-line {
+      font-size: 22px;
+      font-weight: 400;
+      line-height: 1.6;
+      letter-spacing: 0.4px;
+      white-space: nowrap;
+    }
+
+    .typewriter-line .char {
+      display: none;
+    }
+
+    .typewriter-line .char.is-typed {
+      display: inline;
+    }
+
+    .typewriter-line .type-caret {
+      display: inline-block;
+      width: 2px;
+      height: 1.05em;
+      margin-left: 2px;
+      background: currentColor;
+      vertical-align: -0.18em;
+      animation: caret-blink 0.75s step-end infinite;
+    }
+
+    .typewriter-line.is-done .type-caret {
+      animation: none;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    @keyframes caret-blink {
+      50% {
+        opacity: 0;
+      }
+    }
+
+    /* 方式二：逐字显示（适合多行/段落） */
+    .typewriter-paragraph {
+      font-size: 16px;
+      line-height: 1.8;
+      color: #504f49;
+      max-width: 600px;
+    }
+
+    .typewriter-paragraph .char {
+      display: none;
+    }
+
+    .typewriter-paragraph .char.is-typed {
+      display: inline;
+    }
+
+    .typewriter-paragraph .type-caret {
+      display: inline-block;
+      width: 2px;
+      height: 1em;
+      background: #26251e;
+      vertical-align: -0.15em;
+      animation: caret-blink 0.75s step-end infinite;
+    }
+
+    .typewriter-paragraph.is-done .type-caret {
+      animation: none;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    /* 方式三：滚动触发（IntersectionObserver） */
+    .scroll-triggered {
+      font-size: 20px;
+      font-weight: 500;
+      line-height: 1.5;
+      letter-spacing: 0.2px;
+    }
+
+    .scroll-triggered .char {
+      display: none;
+    }
+
+    .scroll-triggered .char.is-typed {
+      display: inline-block;
+    }
+
+    .scroll-triggered .cursor {
+      display: inline-block;
+      width: 2px;
+      height: 18px;
+      background: currentColor;
+      vertical-align: middle;
+      margin-left: 3px;
+      margin-bottom: 2px;
+      opacity: 0;
+      transition: opacity 0.18s ease;
+    }
+
+    .scroll-triggered.is-active .cursor {
+      opacity: 1;
+    }
+
+    .scroll-triggered.is-done .cursor {
+      animation: cursor-blink 1s steps(2, end) infinite;
+    }
+
+    @keyframes cursor-blink {
+      0%, 49% { opacity: 1; }
+      50%, 100% { opacity: 0; }
+    }
+
+    /* 占位区域，用于演示滚动触发 */
+    .spacer {
+      height: 60vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #b1b1b1;
+      font-size: 14px;
+      letter-spacing: 0.5px;
+    }
+
+    .spacer-arrow {
+      font-size: 24px;
+      margin-top: 12px;
+      animation: bounce 1.5s ease-in-out infinite;
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(8px); }
+    }
+
+    /* 控制按钮 */
+    .controls {
+      display: flex;
+      gap: 12px;
+      margin-top: 24px;
+    }
+
+    .btn {
+      padding: 10px 24px;
+      border: 1px solid #26251e;
+      border-radius: 46px;
+      background: transparent;
+      color: #26251e;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .btn:hover {
+      background: #26251e;
+      color: #fafafa;
+    }
+
+    .btn--primary {
+      background: #26251e;
+      color: #fafafa;
+    }
+
+    .btn--primary:hover {
+      background: #3a3933;
+    }
+
+    /* 代码展示区域 */
+    .code-preview {
+      width: 100%;
+      max-width: 800px;
+      background: #f5f4ef;
+      border-radius: 12px;
+      padding: 24px;
+      margin-top: 48px;
+    }
+
+    .code-preview h3 {
+      font-size: 14px;
+      font-weight: 500;
+      color: #504f49;
+      margin-bottom: 16px;
+      letter-spacing: 0.2px;
+    }
+
+    .code-preview pre {
+      font-family: "SF Mono", Monaco, "Cascadia Code", "Roboto Mono", Consolas, monospace;
+      font-size: 13px;
+      line-height: 1.6;
+      color: #26251e;
+      overflow-x: auto;
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+
+    .code-preview code {
+      color: #26251e;
+    }
+
+    .comment { color: #979696; }
+    .keyword { color: #d73a49; }
+    .string { color: #032f62; }
+    .function { color: #6f42c1; }
+  </style>
+</head>
+<body>
+
+  <h1>打字机效果 Demo</h1>
+
+  <!-- 方式一：页面加载自动触发 -->
+  <section class="demo-section">
+    <h2>方式一：页面加载自动触发</h2>
+    <div class="demo-box">
+      <p class="typewriter-line" id="demo1" data-text="面向开发者的新一代 AI 编程助手"></p>
+    </div>
+    <div class="controls">
+      <button class="btn" onclick="restartDemo1()">重播</button>
+    </div>
+  </section>
+
+  <!-- 方式二：多行段落 -->
+  <section class="demo-section">
+    <h2>方式二：多行段落</h2>
+    <div class="demo-box">
+      <p class="typewriter-paragraph" id="demo2" data-text="支持无限上下文，帮助你更高效地理解、构建与协作。知识自动沉淀，配合记忆整理。上百轮对话，也不丢失关键信息，智商始终在线。"></p>
+    </div>
+    <div class="controls">
+      <button class="btn" onclick="restartDemo2()">重播</button>
+    </div>
+  </section>
+
+  <!-- 占位区域 -->
+  <div class="spacer">
+    <div>
+      <div>向下滚动查看滚动触发效果</div>
+      <div class="spacer-arrow">↓</div>
+    </div>
+  </div>
+
+  <!-- 方式三：滚动触发 -->
+  <section class="demo-section">
+    <h2>方式三：滚动触发（IntersectionObserver）</h2>
+    <div class="demo-box">
+      <h3 class="scroll-triggered" id="demo3">模型 Agent 协同优化</h3>
+    </div>
+  </section>
+
+  <!-- 代码预览 -->
+  <div class="code-preview">
+    <h3>核心实现思路</h3>
+    <pre><code><span class="comment">// 1. 将文本拆分为字符，每个字符包裹在 &lt;span class="char"&gt; 中</span>
+<span class="comment">// 2. 默认 .char 为 display: none（隐藏）</span>
+<span class="comment">// 3. 通过 setTimeout 逐个添加 .is-typed 类（display: inline）</span>
+<span class="comment">// 4. 添加光标元素，配合 CSS 动画实现闪烁</span>
+
+<span class="keyword">function</span> <span class="function">typewriter</span>(element, text, delay = <span class="string">55</span>) {
+  element.textContent = <span class="string">''</span>;
+  
+  <span class="comment">// 拆分字符</span>
+  <span class="keyword">const</span> chars = [];
+  <span class="keyword">for</span> (<span class="keyword">const</span> ch <span class="keyword">of</span> text) {
+    <span class="keyword">const</span> span = document.createElement(<span class="string">'span'</span>);
+    span.className = <span class="string">'char'</span>;
+    span.textContent = ch;
+    element.appendChild(span);
+    chars.push(span);
+  }
+  
+  <span class="comment">// 添加光标</span>
+  <span class="keyword">const</span> caret = document.createElement(<span class="string">'span'</span>);
+  caret.className = <span class="string">'type-caret'</span>;
+  element.appendChild(caret);
+  
+  <span class="comment">// 逐个显示</span>
+  chars.forEach((c, i) => {
+    setTimeout(() => c.classList.add(<span class="string">'is-typed'</span>), i * delay);
+  });
+  
+  <span class="comment">// 完成后隐藏光标</span>
+  setTimeout(() => element.classList.add(<span class="string">'is-done'</span>), chars.length * delay + <span class="string">150</span>);
+}</code></pre>
+  </div>
+
+  <script>
+    // ========== 方式一：页面加载自动触发 ==========
+    function initTypewriterLine(elementId, options = {}) {
+      const element = document.getElementById(elementId);
+      if (!element) return;
+
+      const text = element.getAttribute('data-text') || element.textContent.trim();
+      const delay = options.delay || 55;
+      const startDelay = options.startDelay || 350;
+
+      // 清空并准备
+      element.textContent = '';
+      element.classList.remove('is-done');
+      element.style.whiteSpace = 'nowrap';
+
+      // 预计算宽度，防止布局抖动
+      const temp = document.createElement('span');
+      temp.style.cssText = 'position:fixed;visibility:hidden;white-space:nowrap;font:inherit;';
+      temp.textContent = text;
+      document.body.appendChild(temp);
+      const fullW = temp.getBoundingClientRect().width;
+      temp.remove();
+      if (fullW > 0) element.style.width = Math.ceil(fullW) + 'px';
+
+      // 拆分字符
+      const chars = [];
+      for (const ch of text) {
+        const span = document.createElement('span');
+        span.className = 'char';
+        span.textContent = ch;
+        element.appendChild(span);
+        chars.push(span);
+      }
+
+      // 添加光标
+      const caret = document.createElement('span');
+      caret.className = 'type-caret';
+      caret.setAttribute('aria-hidden', 'true');
+      element.appendChild(caret);
+
+      // 逐个显示
+      chars.forEach((c, i) => {
+        setTimeout(() => c.classList.add('is-typed'), startDelay + i * delay);
+      });
+
+      // 完成后标记
+      setTimeout(() => element.classList.add('is-done'), startDelay + chars.length * delay + 150);
+    }
+
+    function restartDemo1() {
+      initTypewriterLine('demo1', { delay: 55, startDelay: 0 });
+    }
+
+    // 页面加载后启动
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(() => initTypewriterLine('demo1'));
+    } else {
+      window.addEventListener('load', () => initTypewriterLine('demo1'));
+    }
+
+    // ========== 方式二：多行段落 ==========
+    function initTypewriterParagraph(elementId, options = {}) {
+      const element = document.getElementById(elementId);
+      if (!element) return;
+
+      const text = element.getAttribute('data-text') || element.textContent.trim();
+      const delay = options.delay || 35;
+      const startDelay = options.startDelay || 200;
+
+      element.textContent = '';
+      element.classList.remove('is-done');
+      element.style.width = '';
+
+      const chars = [];
+      for (const ch of text) {
+        const span = document.createElement('span');
+        span.className = 'char';
+        span.textContent = ch;
+        element.appendChild(span);
+        chars.push(span);
+      }
+
+      const caret = document.createElement('span');
+      caret.className = 'type-caret';
+      caret.setAttribute('aria-hidden', 'true');
+      element.appendChild(caret);
+
+      chars.forEach((c, i) => {
+        setTimeout(() => c.classList.add('is-typed'), startDelay + i * delay);
+      });
+
+      setTimeout(() => element.classList.add('is-done'), startDelay + chars.length * delay + 150);
+    }
+
+    function restartDemo2() {
+      initTypewriterParagraph('demo2', { delay: 35, startDelay: 0 });
+    }
+
+    // 延迟启动方式二
+    setTimeout(() => {
+      initTypewriterParagraph('demo2', { delay: 35, startDelay: 500 });
+    }, 1000);
+
+    // ========== 方式三：滚动触发 ==========
+    function initScrollTriggeredTypewriter() {
+      const titles = document.querySelectorAll('.scroll-triggered');
+      if (!titles.length || !('IntersectionObserver' in window)) return;
+
+      const CHAR_DELAY = 130;
+
+      titles.forEach((h3) => {
+        const text = h3.textContent.trim();
+        h3.textContent = '';
+        for (const c of text) {
+          const span = document.createElement('span');
+          span.className = 'char';
+          span.textContent = c;
+          h3.appendChild(span);
+        }
+        const cursor = document.createElement('span');
+        cursor.className = 'cursor';
+        cursor.setAttribute('aria-hidden', 'true');
+        h3.appendChild(cursor);
+      });
+
+      function animateType(h3) {
+        if (h3.dataset.typed === '1') return;
+        h3.dataset.typed = '1';
+        h3.classList.add('is-active');
+        const chars = h3.querySelectorAll('.char');
+        chars.forEach((char, i) => {
+          setTimeout(() => char.classList.add('is-typed'), i * CHAR_DELAY);
+        });
+        setTimeout(() => h3.classList.add('is-done'), chars.length * CHAR_DELAY + 120);
+      }
+
+      function snapShow(h3) {
+        if (h3.dataset.typed === '1') return;
+        h3.dataset.typed = '1';
+        h3.classList.add('is-active', 'is-done');
+        h3.querySelectorAll('.char').forEach((c) => c.classList.add('is-typed'));
+      }
+
+      const obs = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) animateType(entry.target);
+          });
+        },
+        { threshold: 0.25 }
+      );
+      titles.forEach((h3) => obs.observe(h3));
+
+      // 安全兜底
+      window.addEventListener(
+        'scroll',
+        () => {
+          const cut = window.innerHeight * 0.5;
+          titles.forEach((h3) => {
+            if (h3.dataset.typed === '1') return;
+            if (h3.getBoundingClientRect().bottom < cut) snapShow(h3);
+          });
+        },
+        { passive: true }
+      );
+    }
+
+    initScrollTriggeredTypewriter();
+  </script>
+</body>
+</html>

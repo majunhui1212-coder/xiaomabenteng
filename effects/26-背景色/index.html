@@ -1,0 +1,346 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      .item1 {
+        width: 100%;
+        height: 300px;
+        background-image:
+          -webkit-linear-gradient(top, rgba(0, 0, 0, 0.05), rgba(0, 0, 0, 0)),
+          url(images/bg-1.png);
+        background-color: #f7f7f7;
+        background-position:
+          top left,
+          top left;
+        background-repeat: repeat-x, repeat;
+        background-size:
+          100% 30em,
+          auto;
+      }
+      .item2 {
+        width: 100%;
+        height: 300px;
+        background-image: url(images/bg-1.png), url(images/bg-2.png);
+        background-repeat: repeat, no-repeat;
+        background-size:
+          auto,
+          100% 100%;
+        background-attachment: fixed;
+      }
+      .item3 {
+        width: 100%;
+        height: 300px;
+        background:
+          url(images/bgtr.svg) top right no-repeat,
+          url(images/bgbl.svg) bottom left no-repeat,
+          url(images/bgbl.svg) bottom left no-repeat,
+          url(images/overlay.png),
+          linear-gradient(45deg, #b39c68, #a56365, #412e4c);
+      }
+      .item4 {
+        width: 100%;
+        height: 300px;
+        background: linear-gradient(135deg, #1e293b 0%, #475569 100%);
+        position: relative;
+        overflow: hidden;
+      }
+      .item4::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 1;
+        background-image:
+          repeating-linear-gradient(
+            45deg,
+            rgba(255, 255, 255, 0.06),
+            rgba(255, 255, 255, 0.06) 1px,
+            transparent 1px,
+            transparent 100px
+          ),
+          repeating-linear-gradient(
+            -45deg,
+            rgba(255, 255, 255, 0.06),
+            rgba(255, 255, 255, 0.06) 1px,
+            transparent 1px,
+            transparent 100px
+          );
+      }
+      .item5 {
+        width: 100%;
+        height: 300px;
+        background: linear-gradient(
+          135deg,
+          #1e293b 0%,
+          #475569 50%,
+          #64748b 100%
+        );
+        position: relative;
+        overflow: hidden;
+      }
+      .item5::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-image:
+          linear-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(255, 255, 255, 0.08) 1px, transparent 1px);
+        background-size: 60px 60px;
+        background-position:
+          0 0,
+          0 0;
+        animation: gridMove 20s linear infinite;
+      }
+      .item6 {
+        width: 100%;
+        height: 300px;
+        --color1: rgb(108, 231, 221);
+        --color2: rgb(250, 255, 178);
+        background-color: var(--color1);
+        background-image:
+          linear-gradient(
+            45deg,
+            var(--color2) 25%,
+            transparent 25%,
+            transparent 75%,
+            var(--color2) 75%,
+            var(--color2)
+          ),
+          linear-gradient(
+            45deg,
+            var(--color2) 25%,
+            var(--color1) 25%,
+            var(--color1) 75%,
+            var(--color2) 75%,
+            var(--color2)
+          );
+        background-size: 60px 60px;
+        background-position:
+          0 0,
+          30px 30px;
+      }
+      .item7 {
+        height: 300px;
+        width: 100%;
+        position: relative;
+        background-color: #f8fafc;
+      }
+
+      .item7 .grid-background {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        z-index: 0;
+        background-image:
+          linear-gradient(to right, #e2e8f0 1px, transparent 1px),
+          linear-gradient(to bottom, #e2e8f0 1px, transparent 1px);
+        background-size: 20px 30px;
+        -webkit-mask-image: radial-gradient(
+          ellipse 70% 60% at 50% 0%,
+          #000 60%,
+          transparent 100%
+        );
+        mask-image: radial-gradient(
+          ellipse 70% 60% at 50% 0%,
+          #000 60%,
+          transparent 100%
+        );
+      }
+
+      .item8 {
+        height: 300px;
+        width: 100%;
+        --color1: rgb(0, 3, 49);
+        --color2: rgb(248, 255, 182);
+        background-image:
+          linear-gradient(
+            45deg,
+            var(--color2) 25%,
+            transparent 25%,
+            transparent 75%,
+            var(--color2) 75%,
+            var(--color2)
+          ),
+          linear-gradient(
+            135deg,
+            var(--color2) 25%,
+            var(--color1) 25%,
+            var(--color1) 75%,
+            var(--color2) 75%,
+            var(--color2)
+          );
+        background-size: 90px 90px;
+        background-position:
+          0 0,
+          135px 135px;
+      }
+
+      .item9 {
+        height: 300px;
+        width: 100%;
+        --s: 200px; /* control the size */
+        --c1: #1d1d1d;
+        --c2: #4e4f51;
+        --c3: #3c3c3c;
+
+        background:
+          repeating-conic-gradient(
+              from 30deg,
+              #0000 0 120deg,
+              var(--c3) 0 180deg
+            )
+            calc(0.5 * var(--s)) calc(0.5 * var(--s) * 0.577),
+          repeating-conic-gradient(
+            from 30deg,
+            var(--c1) 0 60deg,
+            var(--c2) 0 120deg,
+            var(--c3) 0 180deg
+          );
+        background-size: var(--s) calc(var(--s) * 0.577);
+      }
+
+      .item10 {
+        height: 300px;
+        width: 100%;
+        /* control ize */
+        --u: 5px;
+        --c1: #ededee;
+        --c2: #000000;
+        --c3: #1e1e1e;
+        --gp: 50% / calc(var(--u) * 16.9) calc(var(--u) * 12.8);
+        background:
+          conic-gradient(
+              from 122deg at 50% 85.15%,
+              var(--c2) 0 58deg,
+              var(--c3) 0 116deg,
+              #fff0 0 100%
+            )
+            var(--gp),
+          conic-gradient(
+              from 122deg at 50% 72.5%,
+              var(--c1) 0 116deg,
+              #fff0 0 100%
+            )
+            var(--gp),
+          conic-gradient(
+              from 58deg at 82.85% 50%,
+              var(--c3) 0 64deg,
+              #fff0 0 100%
+            )
+            var(--gp),
+          conic-gradient(
+              from 58deg at 66.87% 50%,
+              var(--c1) 0 64deg,
+              var(--c2) 0 130deg,
+              #fff0 0 100%
+            )
+            var(--gp),
+          conic-gradient(
+              from 238deg at 17.15% 50%,
+              var(--c2) 0 64deg,
+              #fff0 0 100%
+            )
+            var(--gp),
+          conic-gradient(
+              from 172deg at 33.13% 50%,
+              var(--c3) 0 66deg,
+              var(--c1) 0 130deg,
+              #fff0 0 100%
+            )
+            var(--gp),
+          linear-gradient(98deg, var(--c3) 0 15%, #fff0 calc(15% + 1px) 100%)
+            var(--gp),
+          linear-gradient(-98deg, var(--c2) 0 15%, #fff0 calc(15% + 1px) 100%)
+            var(--gp),
+          conic-gradient(
+              from -58deg at 50.25% 14.85%,
+              var(--c3) 0 58deg,
+              var(--c2) 0 116deg,
+              #fff0 0 100%
+            )
+            var(--gp),
+          conic-gradient(
+              from -58deg at 50% 28.125%,
+              var(--c1) 0 116deg,
+              #fff0 0 100%
+            )
+            var(--gp),
+          linear-gradient(90deg, var(--c2) 0 50%, var(--c3) 0 100%) var(--gp);
+      }
+
+      .item11 {
+        height: 300px;
+        width: 100%;
+        --s: 60px;
+        --c1: #180a22;
+        --c2: #5b42f3;
+        --_g: radial-gradient(
+          25% 25% at 25% 25%,
+          var(--c1) 99%,
+          rgba(0, 0, 0, 0) 101%
+        );
+        background:
+          var(--_g) var(--s) var(--s) / calc(2 * var(--s)) calc(2 * var(--s)),
+          var(--_g) 0 0 / calc(2 * var(--s)) calc(2 * var(--s)),
+          radial-gradient(50% 50%, var(--c2) 98%, rgba(0, 0, 0, 0)) 0 0 /
+            var(--s) var(--s),
+          repeating-conic-gradient(var(--c2) 0 50%, var(--c1) 0 100%)
+            calc(0.5 * var(--s)) 0 / calc(2 * var(--s)) var(--s);
+      }
+
+      .item12 {
+        height: 300px;
+        width: 100%;
+        /* Add your background pattern here */
+        background-color: #e5e5f7;
+        background-image:
+          radial-gradient(#444cf7 10%, transparent 10%),
+          radial-gradient(#444cf7 10%, transparent 10%);
+        background-size: 100px 100px;
+        background-position:
+          0 0,
+          50px 50px;
+      }
+
+      .item13 {
+        height: 300px;
+        width: 100%;
+        --color: #faa7d8;
+        background:
+          linear-gradient(45deg, var(--color) 25%, transparent 25%) -50px 0,
+          linear-gradient(-45deg, var(--color) 25%, transparent 25%) -50px 0,
+          linear-gradient(45deg, transparent 75%, var(--color) 75%) -50px 0,
+          linear-gradient(-45deg, transparent 75%, var(--color) 75%) -50px 0;
+        background-color: #e5e5f7;
+        background-size: 10px 40px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="item1"></div>
+    <div class="item2"></div>
+    <div class="item3"></div>
+    <div class="item4"></div>
+    <div class="item5"></div>
+    <div class="item6"></div>
+    <div class="item7">
+      <div class="grid-background"></div>
+    </div>
+    <div class="item8"></div>
+    <div class="item9"></div>
+    <div class="item10"></div>
+    <div class="item11"></div>
+    <div class="item12"></div>
+    <div class="item13"></div>
+  </body>
+</html>
