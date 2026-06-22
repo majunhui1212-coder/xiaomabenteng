@@ -18,6 +18,153 @@ const EFFECTS_DATA = [
     "screenshot": "effects/示例效果/1-固定导航栏.png"
   },
   {
+    "id": "2-毛玻璃背景",
+    "name": "毛玻璃背景",
+    "dir": "2-毛玻璃背景",
+    "category": "背景 & 氛围特效",
+    "files": [
+      "index.html",
+      "style.css"
+    ],
+    "has_html": true,
+    "has_css": true,
+    "has_js": false,
+    "images": [],
+    "entry_html": "index.html",
+    "entry_path": "effects/2-毛玻璃背景/index.html",
+    "screenshot": "effects/示例效果/2-毛玻璃背景.png"
+  },
+  {
+    "id": "3-毛玻璃景深效果",
+    "name": "毛玻璃景深效果",
+    "dir": "3-毛玻璃景深效果",
+    "category": "交互 & 按钮",
+    "files": [
+      "index.html",
+      "style.css"
+    ],
+    "has_html": true,
+    "has_css": true,
+    "has_js": false,
+    "images": [],
+    "entry_html": "index.html",
+    "entry_path": "effects/3-毛玻璃景深效果/index.html",
+    "screenshot": "effects/示例效果/3-毛玻璃景深效果.png"
+  },
+  {
+    "id": "4-上下切换背景",
+    "name": "上下切换背景",
+    "dir": "4-上下切换背景",
+    "category": "背景 & 氛围特效",
+    "files": [
+      "index.html",
+      "script.js",
+      "style.css"
+    ],
+    "has_html": true,
+    "has_css": true,
+    "has_js": true,
+    "images": [],
+    "entry_html": "index.html",
+    "entry_path": "effects/4-上下切换背景/index.html",
+    "screenshot": "effects/示例效果/4-上下切换背景.png"
+  },
+  {
+    "id": "5-拓展卡片",
+    "name": "拓展卡片",
+    "dir": "5-拓展卡片",
+    "category": "卡片 & 图片展示",
+    "files": [
+      "index.html",
+      "script.js",
+      "style.css"
+    ],
+    "has_html": true,
+    "has_css": true,
+    "has_js": true,
+    "images": [],
+    "entry_html": "index.html",
+    "entry_path": "effects/5-拓展卡片/index.html",
+    "screenshot": "effects/示例效果/5-拓展卡片.png"
+  },
+  {
+    "id": "6-左右背景",
+    "name": "左右背景",
+    "dir": "6-左右背景",
+    "category": "背景 & 氛围特效",
+    "files": [
+      "index.html",
+      "ps.jpg",
+      "script.js",
+      "style.css",
+      "xbox.jpg"
+    ],
+    "has_html": true,
+    "has_css": true,
+    "has_js": true,
+    "images": [
+      "ps.jpg",
+      "xbox.jpg"
+    ],
+    "entry_html": "index.html",
+    "entry_path": "effects/6-左右背景/index.html",
+    "screenshot": "effects/示例效果/6-左右背景.png"
+  },
+  {
+    "id": "7-磁铁按钮",
+    "name": "磁铁按钮",
+    "dir": "7-磁铁按钮",
+    "category": "交互 & 按钮",
+    "files": [
+      "index.html",
+      "style.css",
+      "style.js"
+    ],
+    "has_html": true,
+    "has_css": true,
+    "has_js": false,
+    "images": [],
+    "entry_html": "index.html",
+    "entry_path": "effects/7-磁铁按钮/index.html",
+    "screenshot": "effects/示例效果/7-磁铁按钮.png"
+  },
+  {
+    "id": "8-浮动线路",
+    "name": "浮动线路",
+    "dir": "8-浮动线路",
+    "category": "交互 & 按钮",
+    "files": [
+      "floating-lines-demo.html",
+      "style.css",
+      "style.js"
+    ],
+    "has_html": false,
+    "has_css": true,
+    "has_js": false,
+    "images": [],
+    "entry_html": "floating-lines-demo.html",
+    "entry_path": "effects/8-浮动线路/floating-lines-demo.html",
+    "screenshot": "effects/示例效果/8-浮动线路.png"
+  },
+  {
+    "id": "9-滚动画廊",
+    "name": "滚动画廊",
+    "dir": "9-滚动画廊",
+    "category": "卡片 & 图片展示",
+    "files": [
+      "rolling-gallery.html",
+      "style.css",
+      "style.js"
+    ],
+    "has_html": false,
+    "has_css": true,
+    "has_js": false,
+    "images": [],
+    "entry_html": "rolling-gallery.html",
+    "entry_path": "effects/9-滚动画廊/rolling-gallery.html",
+    "screenshot": "effects/示例效果/9-滚动画廊.png"
+  },
+  {
     "id": "10-照片堆叠",
     "name": "照片堆叠",
     "dir": "10-照片堆叠",
@@ -182,24 +329,7 @@ const EFFECTS_DATA = [
     "images": [],
     "entry_html": "index.html",
     "entry_path": "effects/19-文案侧旋出现/index.html",
-    "screenshot": ""
-  },
-  {
-    "id": "2-毛玻璃背景",
-    "name": "毛玻璃背景",
-    "dir": "2-毛玻璃背景",
-    "category": "背景 & 氛围特效",
-    "files": [
-      "index.html",
-      "style.css"
-    ],
-    "has_html": true,
-    "has_css": true,
-    "has_js": false,
-    "images": [],
-    "entry_html": "index.html",
-    "entry_path": "effects/2-毛玻璃背景/index.html",
-    "screenshot": "effects/示例效果/2-毛玻璃背景.png"
+    "screenshot": "effects/示例效果/19-文案侧旋出现.png"
   },
   {
     "id": "20-图片卡片展开",
@@ -253,7 +383,7 @@ const EFFECTS_DATA = [
     "id": "23-旋转展开",
     "name": "旋转展开",
     "dir": "23-旋转展开",
-    "category": "其他特效",
+    "category": "其他动效",
     "files": [
       "index.html"
     ],
@@ -285,7 +415,7 @@ const EFFECTS_DATA = [
     "id": "25-视频头部",
     "name": "视频头部",
     "dir": "25-视频头部",
-    "category": "其他特效",
+    "category": "其他动效",
     "files": [
       "index.html",
       "style.css"
@@ -313,7 +443,7 @@ const EFFECTS_DATA = [
     "images": [],
     "entry_html": "index.html",
     "entry_path": "effects/26-背景色/index.html",
-    "screenshot": ""
+    "screenshot": "effects/示例效果/26-背景色.png"
   },
   {
     "id": "27-烟花",
@@ -366,23 +496,6 @@ const EFFECTS_DATA = [
     "screenshot": "effects/示例效果/29-泡泡.png"
   },
   {
-    "id": "3-毛玻璃景深效果",
-    "name": "毛玻璃景深效果",
-    "dir": "3-毛玻璃景深效果",
-    "category": "交互 & 按钮",
-    "files": [
-      "index.html",
-      "style.css"
-    ],
-    "has_html": true,
-    "has_css": true,
-    "has_js": false,
-    "images": [],
-    "entry_html": "index.html",
-    "entry_path": "effects/3-毛玻璃景深效果/index.html",
-    "screenshot": ""
-  },
-  {
     "id": "30-粒子跟随",
     "name": "粒子跟随",
     "dir": "30-粒子跟随",
@@ -396,7 +509,7 @@ const EFFECTS_DATA = [
     "images": [],
     "entry_html": "index.html",
     "entry_path": "effects/30-粒子跟随/index.html",
-    "screenshot": ""
+    "screenshot": "effects/示例效果/30-粒子跟随.png"
   },
   {
     "id": "31-3D立方体",
@@ -412,7 +525,7 @@ const EFFECTS_DATA = [
     "images": [],
     "entry_html": "index.html",
     "entry_path": "effects/31-3D立方体/index.html",
-    "screenshot": ""
+    "screenshot": "effects/示例效果/31-3D立方体.png"
   },
   {
     "id": "32-导航栏",
@@ -428,7 +541,7 @@ const EFFECTS_DATA = [
     "images": [],
     "entry_html": "index.html",
     "entry_path": "effects/32-导航栏/index.html",
-    "screenshot": ""
+    "screenshot": "effects/示例效果/32-导航栏.png"
   },
   {
     "id": "33-倾斜图片",
@@ -476,7 +589,7 @@ const EFFECTS_DATA = [
     "images": [],
     "entry_html": "index.html",
     "entry_path": "effects/35-打字机/index.html",
-    "screenshot": ""
+    "screenshot": "effects/示例效果/35-打字机.png"
   },
   {
     "id": "36-飞鸟",
@@ -492,7 +605,7 @@ const EFFECTS_DATA = [
     "images": [],
     "entry_html": "index.html",
     "entry_path": "effects/36-飞鸟/index.html",
-    "screenshot": ""
+    "screenshot": "effects/示例效果/36-飞鸟.png"
   },
   {
     "id": "37-水波纹切换图片",
@@ -536,7 +649,7 @@ const EFFECTS_DATA = [
     "images": [],
     "entry_html": "index.html",
     "entry_path": "effects/38-水滴/index.html",
-    "screenshot": ""
+    "screenshot": "effects/示例效果/38-水滴.png"
   },
   {
     "id": "39-绳串图片",
@@ -552,25 +665,7 @@ const EFFECTS_DATA = [
     "images": [],
     "entry_html": "index.html",
     "entry_path": "effects/39-绳串图片/index.html",
-    "screenshot": ""
-  },
-  {
-    "id": "4-上下切换背景",
-    "name": "上下切换背景",
-    "dir": "4-上下切换背景",
-    "category": "背景 & 氛围特效",
-    "files": [
-      "index.html",
-      "script.js",
-      "style.css"
-    ],
-    "has_html": true,
-    "has_css": true,
-    "has_js": true,
-    "images": [],
-    "entry_html": "index.html",
-    "entry_path": "effects/4-上下切换背景/index.html",
-    "screenshot": "effects/示例效果/4-上下切换背景.png"
+    "screenshot": "effects/示例效果/39-绳串图片.png"
   },
   {
     "id": "40-彩虹色边框",
@@ -587,7 +682,7 @@ const EFFECTS_DATA = [
     "images": [],
     "entry_html": "index.html",
     "entry_path": "effects/40-彩虹色边框/index.html",
-    "screenshot": ""
+    "screenshot": "effects/示例效果/40-彩虹色边框.png"
   },
   {
     "id": "41-雨滴特效",
@@ -604,100 +699,5 @@ const EFFECTS_DATA = [
     "entry_html": "index.html",
     "entry_path": "effects/41-雨滴特效/index.html",
     "screenshot": ""
-  },
-  {
-    "id": "5-拓展卡片",
-    "name": "拓展卡片",
-    "dir": "5-拓展卡片",
-    "category": "卡片 & 图片展示",
-    "files": [
-      "index.html",
-      "script.js",
-      "style.css"
-    ],
-    "has_html": true,
-    "has_css": true,
-    "has_js": true,
-    "images": [],
-    "entry_html": "index.html",
-    "entry_path": "effects/5-拓展卡片/index.html",
-    "screenshot": "effects/示例效果/5-拓展卡片.png"
-  },
-  {
-    "id": "6-左右背景",
-    "name": "左右背景",
-    "dir": "6-左右背景",
-    "category": "背景 & 氛围特效",
-    "files": [
-      "index.html",
-      "ps.jpg",
-      "script.js",
-      "style.css",
-      "xbox.jpg"
-    ],
-    "has_html": true,
-    "has_css": true,
-    "has_js": true,
-    "images": [
-      "ps.jpg",
-      "xbox.jpg"
-    ],
-    "entry_html": "index.html",
-    "entry_path": "effects/6-左右背景/index.html",
-    "screenshot": "effects/示例效果/6-左右背景.png"
-  },
-  {
-    "id": "7-磁铁按钮",
-    "name": "磁铁按钮",
-    "dir": "7-磁铁按钮",
-    "category": "交互 & 按钮",
-    "files": [
-      "index.html",
-      "style.css",
-      "style.js"
-    ],
-    "has_html": true,
-    "has_css": true,
-    "has_js": false,
-    "images": [],
-    "entry_html": "index.html",
-    "entry_path": "effects/7-磁铁按钮/index.html",
-    "screenshot": "effects/示例效果/7-磁铁按钮.png"
-  },
-  {
-    "id": "8-浮动线路",
-    "name": "浮动线路",
-    "dir": "8-浮动线路",
-    "category": "交互 & 按钮",
-    "files": [
-      "floating-lines-demo.html",
-      "style.css",
-      "style.js"
-    ],
-    "has_html": false,
-    "has_css": true,
-    "has_js": false,
-    "images": [],
-    "entry_html": "floating-lines-demo.html",
-    "entry_path": "effects/8-浮动线路/floating-lines-demo.html",
-    "screenshot": "effects/示例效果/8-浮动线路.png"
-  },
-  {
-    "id": "9-滚动画廊",
-    "name": "滚动画廊",
-    "dir": "9-滚动画廊",
-    "category": "卡片 & 图片展示",
-    "files": [
-      "rolling-gallery.html",
-      "style.css",
-      "style.js"
-    ],
-    "has_html": false,
-    "has_css": true,
-    "has_js": false,
-    "images": [],
-    "entry_html": "rolling-gallery.html",
-    "entry_path": "effects/9-滚动画廊/rolling-gallery.html",
-    "screenshot": "effects/示例效果/9-滚动画廊.png"
   }
 ];
